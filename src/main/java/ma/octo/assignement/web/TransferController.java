@@ -12,10 +12,8 @@ import ma.octo.assignement.service.AuditService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -50,58 +48,48 @@ class TransferController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createTransaction(@RequestBody TransferDto transferDto)
             throws SoldeDisponibleInsuffisantException, CompteNonExistantException, TransactionException {
-        Compte c1 = compteRepository.findByNrCompte(transferDto.getNrCompteEmetteur());
-        Compte f12 = compteRepository
-                .findByNrCompte(transferDto.getNrCompteBeneficiaire());
+        Compte emetteur = compteRepository.findByNrCompte(transferDto.getNrCompteEmetteur());
+        Compte beneficaire = compteRepository.findByNrCompte(transferDto.getNrCompteBeneficiaire());
 
-        if (c1 == null) {
-            System.out.println("Compte Non existant");
-            throw new CompteNonExistantException("Compte Non existant");
-        }
-
-        if (f12 == null) {
-            System.out.println("Compte Non existant");
+        if (emetteur == null || beneficaire == null) {
+            LOGGER.error("Compte Non existant");
             throw new CompteNonExistantException("Compte Non existant");
         }
 
         if (transferDto.getMontant().equals(null)) {
-            System.out.println("Montant vide");
+            LOGGER.error("Montant vide");
             throw new TransactionException("Montant vide");
         } else if (transferDto.getMontant().intValue() == 0) {
-            System.out.println("Montant vide");
+            LOGGER.error("Montant vide");
             throw new TransactionException("Montant vide");
         } else if (transferDto.getMontant().intValue() < 10) {
-            System.out.println("Montant minimal de transfer non atteint");
+            LOGGER.error("Montant minimal de transfer non atteint");
             throw new TransactionException("Montant minimal de transfer non atteint");
         } else if (transferDto.getMontant().intValue() > MONTANT_MAXIMAL) {
-            System.out.println("Montant maximal de transfer dépassé");
+            LOGGER.error("Montant maximal de transfer dépassé");
             throw new TransactionException("Montant maximal de transfer dépassé");
         }
 
         if (transferDto.getMotif().length() < 0) {
-            System.out.println("Motif vide");
+            LOGGER.error("Motif vide");
             throw new TransactionException("Motif vide");
         }
 
-        if (c1.getSolde().intValue() - transferDto.getMontant().intValue() < 0) {
+        if (emetteur.getSolde().intValue() - transferDto.getMontant().intValue() < 0) {
             LOGGER.error("Solde insuffisant pour l'utilisateur");
+            throw new SoldeDisponibleInsuffisantException("Solde insuffisant pour l'utilisateur");
         }
 
-        if (c1.getSolde().intValue() - transferDto.getMontant().intValue() < 0) {
-            LOGGER.error("Solde insuffisant pour l'utilisateur");
-        }
+        emetteur.setSolde(emetteur.getSolde().subtract(transferDto.getMontant()));
+        compteRepository.save(emetteur);
 
-        c1.setSolde(c1.getSolde().subtract(transferDto.getMontant()));
-        compteRepository.save(c1);
-
-        f12
-                .setSolde(new BigDecimal(f12.getSolde().intValue() + transferDto.getMontant().intValue()));
-        compteRepository.save(f12);
+        beneficaire.setSolde(beneficaire.getSolde().add(transferDto.getMontant()));
+        compteRepository.save(beneficaire);
 
         Transfer transfer = new Transfer();
         transfer.setDateExecution(transferDto.getDate());
-        transfer.setCompteBeneficiaire(f12);
-        transfer.setCompteEmetteur(c1);
+        transfer.setCompteBeneficiaire(beneficaire);
+        transfer.setCompteEmetteur(emetteur);
         transfer.setMontantTransfer(transferDto.getMontant());
 
         transferRepository.save(transfer);
@@ -109,9 +97,5 @@ class TransferController {
         auditService.auditTransfer("Transfer depuis " + transferDto.getNrCompteEmetteur() + " vers " + transferDto
                         .getNrCompteBeneficiaire() + " d'un montant de " + transferDto.getMontant()
                         .toString());
-    }
-
-    private void save(Transfer Transfer) {
-        transferRepository.save(Transfer);
     }
 }
