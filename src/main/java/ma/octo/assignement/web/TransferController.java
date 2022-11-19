@@ -30,23 +30,23 @@ class TransferController {
     Logger LOGGER = LoggerFactory.getLogger(TransferController.class);
 
     @Autowired
-    private CompteRepository rep1;
+    private CompteRepository compteRepository;
     @Autowired
-    private TransferRepository re2;
+    private TransferRepository transferRepository;
     @Autowired
-    private AuditService monservice;
+    private AuditService auditService;
 
-    private final UtilisateurRepository re3;
+    private final UtilisateurRepository utilisateurRepository;
 
     @Autowired
-    TransferController(UtilisateurRepository re3) {
-        this.re3 = re3;
+    TransferController(UtilisateurRepository utilisateurRepository) {
+        this.utilisateurRepository = utilisateurRepository;
     }
 
     @GetMapping("listDesTransferts")
     List<Transfer> loadAll() {
         LOGGER.info("Lister des utilisateurs");
-        var all = re2.findAll();
+        var all = transferRepository.findAll();
 
         if (CollectionUtils.isEmpty(all)) {
             return null;
@@ -57,7 +57,7 @@ class TransferController {
 
     @GetMapping("listOfAccounts")
     List<Compte> loadAllCompte() {
-        List<Compte> all = rep1.findAll();
+        List<Compte> all = compteRepository.findAll();
 
         if (CollectionUtils.isEmpty(all)) {
             return null;
@@ -68,7 +68,7 @@ class TransferController {
 
     @GetMapping("lister_utilisateurs")
     List<Utilisateur> loadAllUtilisateur() {
-        List<Utilisateur> all = re3.findAll();
+        List<Utilisateur> all = utilisateurRepository.findAll();
 
         if (CollectionUtils.isEmpty(all)) {
             return null;
@@ -81,8 +81,8 @@ class TransferController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createTransaction(@RequestBody TransferDto transferDto)
             throws SoldeDisponibleInsuffisantException, CompteNonExistantException, TransactionException {
-        Compte c1 = rep1.findByNrCompte(transferDto.getNrCompteEmetteur());
-        Compte f12 = rep1
+        Compte c1 = compteRepository.findByNrCompte(transferDto.getNrCompteEmetteur());
+        Compte f12 = compteRepository
                 .findByNrCompte(transferDto.getNrCompteBeneficiaire());
 
         if (c1 == null) {
@@ -123,11 +123,11 @@ class TransferController {
         }
 
         c1.setSolde(c1.getSolde().subtract(transferDto.getMontant()));
-        rep1.save(c1);
+        compteRepository.save(c1);
 
         f12
                 .setSolde(new BigDecimal(f12.getSolde().intValue() + transferDto.getMontant().intValue()));
-        rep1.save(f12);
+        compteRepository.save(f12);
 
         Transfer transfer = new Transfer();
         transfer.setDateExecution(transferDto.getDate());
@@ -135,14 +135,14 @@ class TransferController {
         transfer.setCompteEmetteur(c1);
         transfer.setMontantTransfer(transferDto.getMontant());
 
-        re2.save(transfer);
+        transferRepository.save(transfer);
 
-        monservice.auditTransfer("Transfer depuis " + transferDto.getNrCompteEmetteur() + " vers " + transferDto
+        auditService.auditTransfer("Transfer depuis " + transferDto.getNrCompteEmetteur() + " vers " + transferDto
                         .getNrCompteBeneficiaire() + " d'un montant de " + transferDto.getMontant()
                         .toString());
     }
 
     private void save(Transfer Transfer) {
-        re2.save(Transfer);
+        transferRepository.save(Transfer);
     }
 }
