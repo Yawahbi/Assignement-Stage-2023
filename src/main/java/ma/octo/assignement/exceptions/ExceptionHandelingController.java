@@ -1,4 +1,4 @@
-package ma.octo.assignement.web.common;
+package ma.octo.assignement.exceptions;
 
 import ma.octo.assignement.exceptions.CompteNonExistantException;
 import ma.octo.assignement.exceptions.SoldeDisponibleInsuffisantException;
