@@ -43,7 +43,7 @@ class TransferController {
         LOGGER.info("Lister des utilisateurs");
         var all = transferRepository.findAll();
 
-        return CollectionUtils.isEmpty(all) ? all : null;
+        return all;
     }
 
     @PostMapping
