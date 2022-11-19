@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
+@RequestMapping(path="/accounts")
 public class CompteController {
 
     private final CompteRepository compteRepository;
@@ -18,7 +19,7 @@ public class CompteController {
         this.compteRepository = compteRepository;
     }
 
-    @GetMapping("listOfAccounts")
+    @GetMapping
     List<Compte> loadAllCompte() {
         List<Compte> all = compteRepository.findAll();
 

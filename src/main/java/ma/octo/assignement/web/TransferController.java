@@ -38,7 +38,7 @@ class TransferController {
         this.auditService = auditService;
     }
 
-    @GetMapping("listDesTransferts")
+    @GetMapping
     List<Transfer> loadAll() {
         LOGGER.info("Lister des utilisateurs");
         var all = transferRepository.findAll();
@@ -50,7 +50,7 @@ class TransferController {
         }
     }
 
-    @PostMapping("/executerTransfers")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTransaction(@RequestBody TransferDto transferDto)
             throws SoldeDisponibleInsuffisantException, CompteNonExistantException, TransactionException {
