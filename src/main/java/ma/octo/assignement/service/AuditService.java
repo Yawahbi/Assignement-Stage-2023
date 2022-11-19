@@ -16,8 +16,11 @@ public class AuditService {
 
     Logger LOGGER = LoggerFactory.getLogger(AuditService.class);
 
-    @Autowired
-    private AuditTransferRepository auditTransferRepository;
+    private final AuditTransferRepository auditTransferRepository;
+
+    public AuditService(AuditTransferRepository auditTransferRepository) {
+        this.auditTransferRepository = auditTransferRepository;
+    }
 
     public void auditTransfer(String message) {
 

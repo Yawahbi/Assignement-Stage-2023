@@ -16,12 +16,18 @@ import java.util.Date;
 
 @SpringBootApplication
 public class NiceBankApplication implements CommandLineRunner {
-	@Autowired
-	private CompteRepository compteRepository;
-	@Autowired
-	private UtilisateurRepository utilisateurRepository;
-	@Autowired
-	private TransferRepository transferRepository;
+
+	private final CompteRepository compteRepository;
+
+	private final UtilisateurRepository utilisateurRepository;
+
+	private final TransferRepository transferRepository;
+
+	public NiceBankApplication(CompteRepository compteRepository, UtilisateurRepository utilisateurRepository, TransferRepository transferRepository) {
+		this.compteRepository = compteRepository;
+		this.utilisateurRepository = utilisateurRepository;
+		this.transferRepository = transferRepository;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(NiceBankApplication.class, args);

@@ -20,8 +20,11 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "ma.octo.assignement.repository")
 public class JpaConfig {
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
+
+    public JpaConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {

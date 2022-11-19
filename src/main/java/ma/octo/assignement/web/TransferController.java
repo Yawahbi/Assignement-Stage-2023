@@ -29,18 +29,20 @@ class TransferController {
 
     Logger LOGGER = LoggerFactory.getLogger(TransferController.class);
 
-    @Autowired
-    private CompteRepository compteRepository;
-    @Autowired
-    private TransferRepository transferRepository;
-    @Autowired
-    private AuditService auditService;
+    private final CompteRepository compteRepository;
+
+    private final TransferRepository transferRepository;
+
+    private final AuditService auditService;
 
     private final UtilisateurRepository utilisateurRepository;
 
     @Autowired
-    TransferController(UtilisateurRepository utilisateurRepository) {
+    TransferController(UtilisateurRepository utilisateurRepository,CompteRepository compteRepository,TransferRepository transferRepository,AuditService auditService) {
         this.utilisateurRepository = utilisateurRepository;
+        this.compteRepository = compteRepository;
+        this.transferRepository = transferRepository;
+        this.auditService = auditService;
     }
 
     @GetMapping("listDesTransferts")
