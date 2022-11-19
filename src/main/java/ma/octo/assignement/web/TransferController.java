@@ -21,7 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.util.List;
 
-@RestController(value = "/transfers")
+@RestController
+@RequestMapping(path="/transfers")
 class TransferController {
 
     public static final int MONTANT_MAXIMAL = 10000;
