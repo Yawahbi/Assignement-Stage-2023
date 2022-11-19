@@ -17,6 +17,9 @@ public class AuditTransfer {
   @Enumerated(EnumType.STRING)
   private EventType eventType;
 
+  public AuditTransfer() {
+  }
+
   public Long getId() {
     return id;
   }

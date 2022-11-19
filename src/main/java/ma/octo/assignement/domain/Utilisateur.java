@@ -30,6 +30,8 @@ public class Utilisateur implements Serializable {
   @Temporal(TemporalType.DATE)
   private Date birthdate;
 
+  public Utilisateur() {
+  }
 
   public String getGender() {
     return gender;

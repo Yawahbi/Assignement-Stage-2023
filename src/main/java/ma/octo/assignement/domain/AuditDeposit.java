@@ -17,6 +17,9 @@ public class AuditDeposit {
   @Enumerated(EnumType.STRING)
   private EventType eventType;
 
+  public AuditDeposit() {
+  }
+
   public Long getId() {
     return id;
   }

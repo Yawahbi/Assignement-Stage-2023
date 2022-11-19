@@ -22,6 +22,9 @@ public class Compte {
   @JoinColumn(name = "utilisateur_id")
   private Utilisateur utilisateur;
 
+  public Compte() {
+  }
+
   public String getNrCompte() {
     return nrCompte;
   }

@@ -28,6 +28,9 @@ public class MoneyDeposit {
   @Column(length = 200)
   private String motifDeposit;
 
+  public MoneyDeposit() {
+  }
+
   public BigDecimal getMontant() {
     return Montant;
   }

@@ -27,6 +27,9 @@ public class Transfer {
   @Column(length = 200)
   private String motifTransfer;
 
+  public Transfer() {
+  }
+
   public BigDecimal getMontantTransfer() {
     return montantTransfer;
   }
