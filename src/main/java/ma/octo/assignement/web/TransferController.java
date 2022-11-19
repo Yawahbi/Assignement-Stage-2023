@@ -1,19 +1,16 @@
 package ma.octo.assignement.web;
 
 import ma.octo.assignement.domain.Compte;
-import ma.octo.assignement.domain.Utilisateur;
 import ma.octo.assignement.domain.Transfer;
 import ma.octo.assignement.dto.TransferDto;
 import ma.octo.assignement.exceptions.CompteNonExistantException;
 import ma.octo.assignement.exceptions.SoldeDisponibleInsuffisantException;
 import ma.octo.assignement.exceptions.TransactionException;
 import ma.octo.assignement.repository.CompteRepository;
-import ma.octo.assignement.repository.UtilisateurRepository;
 import ma.octo.assignement.repository.TransferRepository;
 import ma.octo.assignement.service.AuditService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
@@ -35,11 +32,7 @@ class TransferController {
 
     private final AuditService auditService;
 
-    private final UtilisateurRepository utilisateurRepository;
-
-    @Autowired
-    TransferController(UtilisateurRepository utilisateurRepository,CompteRepository compteRepository,TransferRepository transferRepository,AuditService auditService) {
-        this.utilisateurRepository = utilisateurRepository;
+    TransferController(CompteRepository compteRepository,TransferRepository transferRepository,AuditService auditService) {
         this.compteRepository = compteRepository;
         this.transferRepository = transferRepository;
         this.auditService = auditService;
@@ -54,28 +47,6 @@ class TransferController {
             return null;
         } else {
             return CollectionUtils.isEmpty(all) ? all : null;
-        }
-    }
-
-    @GetMapping("listOfAccounts")
-    List<Compte> loadAllCompte() {
-        List<Compte> all = compteRepository.findAll();
-
-        if (CollectionUtils.isEmpty(all)) {
-            return null;
-        } else {
-            return all;
-        }
-    }
-
-    @GetMapping("lister_utilisateurs")
-    List<Utilisateur> loadAllUtilisateur() {
-        List<Utilisateur> all = utilisateurRepository.findAll();
-
-        if (CollectionUtils.isEmpty(all)) {
-            return null;
-        } else {
-            return all;
         }
     }
 
