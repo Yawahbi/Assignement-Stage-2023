@@ -63,7 +63,7 @@ public class DepositService {
             throw new TransactionException("Montant minimal de deposit non atteint");
         } else if (depositDto.getMontant().intValue() > MONTANT_MAXIMAL) {
             LOGGER.error("Montant dépasse le montant maximal de deposit");
-            throw new TransactionException("Montant maximal de deposit dépassé");
+            throw new TransactionException("Montant dépasse le montant maximal de deposit");
         }
 
         if( depositDto.getNom_prenom_emetteur() == null || depositDto.getNom_prenom_emetteur().length() < 0 ){
